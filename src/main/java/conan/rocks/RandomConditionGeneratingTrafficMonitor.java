@@ -7,7 +7,7 @@ public class RandomConditionGeneratingTrafficMonitor implements TrafficMonitor {
     private Random random = new Random();
 
     @Override
-    public TrafficConditions getTrafficConditions(String stationName) {
+    public TrafficConditions getTrafficConditions(String station) {
         return TrafficConditions.values()[random.nextInt(3)];
     }
 }
