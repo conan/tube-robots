@@ -14,6 +14,7 @@ public class Robot implements Runnable {
 
     private TrafficMonitor trafficMonitor;
     private NearbyLocationFinder nearbyLocationFinder;
+    private TrafficInformationReporter reporter;
 
     private BlockingQueue<Location> queue = new LinkedBlockingQueue<>(MAX_POINTS);
     private String name;
@@ -48,12 +49,8 @@ public class Robot implements Runnable {
                 nearbyLocationFinder.getNearbyLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
 
         if(nearbyTubeStation != null) {
-            reportTrafficInformation(currentLocation, trafficMonitor.getTrafficConditions(nearbyTubeStation));
+            reporter.report(currentLocation, trafficMonitor.getTrafficConditions(nearbyTubeStation));
         }
-    }
-
-    private void reportTrafficInformation(Location location, TrafficConditions conditions) {
-        // TODO format the traffic conditions and print them out
     }
 
     /**
