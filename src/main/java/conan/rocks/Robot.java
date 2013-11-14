@@ -4,6 +4,10 @@ import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * A robot that travels around bending time and space looking for nearby locations.  This class is not thread-safe, but
+ * it would be easy to synchronize the addLocations() method.
+ */
 public class Robot implements Runnable {
 
     public static final int MAX_POINTS = 10;
@@ -53,30 +57,28 @@ public class Robot implements Runnable {
     }
 
     /**
-     * Adds a Collection of no more than {@link #MAX_POINTS} points (represented by {@link Location Point2D.Location}
-     * instances) to this robot's queue, blocking until space has been made in the queue for all the elements in
-     * <code>points</code>.  This method is <code>synchronized</code> to ensure that no interleaving of points can occur
-     * if multiple threads are attempting to dispatch data to this robot simultaneously; if you are concerned about this
-     * happening and need to guarantee a longer route, then you'll need a bigger robot.
+     * Adds a Collection of no more than {@link #MAX_POINTS} {@link Location}s to this robot's queue, blocking until
+     * space has been made in the queue for all the elements in <code>locations</code>.
      *
-     * @param points the locations the robot should visit; note that if a particular route between the points is
+     * @param locations the locations the robot should visit; note that if a particular route between the locations is
      *               desired, this should be an ordered Collection of some sort.
-     * @throws InterruptedException if the robot is interrupted before all the <code>points</code> have been added to
+     * @throws InterruptedException if the robot is interrupted before all the <code>locations</code> have been added to
      *                              its queue
      */
-    public synchronized void addPoints(Collection<Location> points) throws InterruptedException {
-        if (points == null || points.size() > MAX_POINTS) {
+    public synchronized void addLocations(Collection<Location> locations) throws InterruptedException {
+        if (locations == null || locations.size() > MAX_POINTS) {
             throw new IllegalArgumentException("Robot " + name + " can cope with up to " + MAX_POINTS
-                    + " points at a time, but was given: " + points);
+                    + " locations at a time, but was given: " + locations);
         }
 
-        for (Location point : points) {
-            queue.put(point);
+        for (Location location : locations) {
+            queue.put(location);
         }
     }
 
     /**
-     * Signals the robot to shutdown at the next available opportunity.
+     * Signals the robot to shutdown at the next available opportunity.  No further locations will be processed beyond
+     * the current one.
      */
     public void shutDown() {
         shutDownReceived = true;
